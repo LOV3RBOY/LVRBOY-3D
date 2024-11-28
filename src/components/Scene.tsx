@@ -24,18 +24,23 @@ const VimeoPlayer = dynamic(() => import('./VimeoPlayer'), {
 });
 
 function LoadingFallback() {
-  return null;
+  return (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="text-white text-xl">Loading model...</div>
+    </div>
+  );
 }
 
 export default function Scene() {
   const [showVideo, setShowVideo] = useState(false);
+  const [isModelLoading, setIsModelLoading] = useState(true);
 
   const handleVideoClose = () => {
     setShowVideo(false);
   };
 
   return (
-    <div className="relative w-full h-screen">
+    <div className="relative w-full h-screen bg-[#ffc0eb]">
       <Canvas
         shadows
         camera={{ position: [0, 0, 5], fov: 45 }}
@@ -54,7 +59,7 @@ export default function Scene() {
           <ambientLight intensity={1} />
           <pointLight position={[10, 10, 10]} intensity={1} />
           
-          <LvrboyModel />
+          <LvrboyModel onLoad={() => setIsModelLoading(false)} />
           
           <OrbitControls
             enablePan={false}
@@ -69,12 +74,6 @@ export default function Scene() {
             autoRotate={false}
             enableTouchRotate={true}
             enableTouchZoom={true}
-            touchStart={() => {
-              // Optional: Add touch start handling
-            }}
-            touchEnd={() => {
-              // Optional: Add touch end handling
-            }}
           />
         </Suspense>
       </Canvas>
