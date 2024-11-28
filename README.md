@@ -22,8 +22,8 @@ An interactive 3D web experience featuring a dynamic 3D model with hover effects
 
 1. Clone the repository:
 ```bash
-git clone [your-repo-url]
-cd lvrboy3d
+git clone https://github.com/LOV3RBOY/LVRBOY-3D.git
+cd LVRBOY-3D
 ```
 
 2. Install dependencies:
