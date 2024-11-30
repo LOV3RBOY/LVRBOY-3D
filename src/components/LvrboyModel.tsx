@@ -21,26 +21,20 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
 
   const { scene } = useGLTF('/base_basic_shaded.glb', true);
 
-  // Initialize face mesh and materials
   useEffect(() => {
     if (!scene) return;
 
-    // Find and process all meshes
     scene.traverse((child) => {
       if (child instanceof THREE.Mesh) {
-        // Enable shadows for all meshes
         child.castShadow = true;
         child.receiveShadow = true;
 
-        // Look for wing/feet elements by name
         const name = child.name.toLowerCase();
         if (name.includes('wing') || name.includes('feet') || name.includes('shoe')) {
           console.log('Found wing/feet element:', child.name);
-          // Hide the wing elements
           child.visible = false;
         }
 
-        // Process face mesh separately
         if (name.includes('face') || name.includes('head')) {
           console.log('Found face mesh:', child.name);
           faceMesh.current = child;
@@ -98,9 +92,9 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
     }
   });
 
-  const handlePointerOver = (event: ThreeEvent<PointerEvent>) => {
-    event.stopPropagation();
-    const mesh = event.object as THREE.Mesh;
+  const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
+    if (!e.object) return;
+    const mesh = e.object as THREE.Mesh;
     
     if (mesh === faceMesh.current) {
       setHovered(true);
@@ -122,9 +116,9 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
     }
   };
 
-  const handlePointerOut = (event: ThreeEvent<PointerEvent>) => {
-    event.stopPropagation();
-    const mesh = event.object as THREE.Mesh;
+  const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
+    if (!e.object) return;
+    const mesh = e.object as THREE.Mesh;
     
     if (mesh === faceMesh.current) {
       setHovered(false);
@@ -146,9 +140,9 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
     }
   };
 
-  const handleClick = (event: ThreeEvent<MouseEvent>) => {
-    event.stopPropagation();
-    const mesh = event.object as THREE.Mesh;
+  const handleClick = (e: ThreeEvent<MouseEvent>) => {
+    if (!e.object) return;
+    const mesh = e.object as THREE.Mesh;
     
     if (mesh !== faceMesh.current) return;
 
