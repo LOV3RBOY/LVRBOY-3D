@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { gsap } from 'gsap';
+import type { ThreeEvent } from '@react-three/fiber';
 
 interface LvrboyModelProps {
   onLoad?: () => void;
@@ -84,7 +85,6 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
     };
   }, [scene, onLoad]);
 
-  // Face hover animation
   useFrame((state) => {
     if (!faceMesh.current || !hovered) return;
 
@@ -98,7 +98,7 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
     }
   });
 
-  const handlePointerOver = (event: THREE.Event) => {
+  const handlePointerOver = (event: ThreeEvent<PointerEvent>) => {
     event.stopPropagation();
     const mesh = event.object as THREE.Mesh;
     
@@ -122,7 +122,7 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
     }
   };
 
-  const handlePointerOut = (event: THREE.Event) => {
+  const handlePointerOut = (event: ThreeEvent<PointerEvent>) => {
     event.stopPropagation();
     const mesh = event.object as THREE.Mesh;
     
@@ -146,7 +146,7 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
     }
   };
 
-  const handleClick = (event: THREE.Event) => {
+  const handleClick = (event: ThreeEvent<MouseEvent>) => {
     event.stopPropagation();
     const mesh = event.object as THREE.Mesh;
     

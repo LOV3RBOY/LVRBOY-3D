@@ -35,9 +35,6 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@react-three/fiber', '@react-three/drei', 'three']
   },
-  server: {
-    port: 3001
-  },
   images: {
     domains: ['i.vimeocdn.com', 'player.vimeo.com'],
   },
