@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import * as THREE from 'three';
 import InteractiveButton from './InteractiveButton';
 import { Archivo_Black } from 'next/font/google';
+import { motion } from 'framer-motion';
 
 const archivo = Archivo_Black({
   weight: '400',
@@ -89,15 +90,13 @@ export default function Scene() {
             lg:text-[8rem] 
             font-black
             tracking-[0.15em] 
-            text-white
+            text-[#ffffff]
             text-center 
             uppercase 
             select-none
-            [text-shadow:_0_0_40px_rgba(255,255,255,0.4),_4px_4px_2px_rgba(0,0,0,0.15)]
             transition-all
             duration-300
             hover:tracking-[0.2em]
-            hover:[text-shadow:_0_0_60px_rgba(255,255,255,0.6),_4px_4px_2px_rgba(0,0,0,0.2)]
             ${archivo.className}
           `}
           style={{
@@ -105,22 +104,32 @@ export default function Scene() {
             fontVariantCaps: 'all-small-caps',
           }}
         >
-          <span className="mr-1 md:mr-2 relative">
+          <span className="mr-1 md:mr-2">
             LVRB
-            <span className="absolute -inset-2 bg-white/10 blur-xl rounded-lg"></span>
           </span>
           <InteractiveButton onClick={() => setShowVideo(true)} />
-          <span className="ml-1 md:ml-2 relative">
+          <span className="ml-1 md:ml-2">
             Y
-            <span className="absolute -inset-2 bg-white/10 blur-xl rounded-lg"></span>
           </span>
         </h1>
       </div>
 
       <div className="absolute bottom-4 left-0 right-0 z-10 text-center">
-        <p className="text-white/80 text-sm tracking-wider font-light">
-          LVRBOY<span className="align-super text-xs ml-0.5">©</span>
-        </p>
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="text-white text-base tracking-[0.2em] font-light flex items-center justify-center gap-1 hover:tracking-[0.25em] transition-all duration-300 group"
+        >
+          <span className="relative inline-block">
+            LVRBOY
+            <span className="absolute -inset-4 bg-white/5 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+          </span>
+          <span className="relative inline-flex items-start">
+            <span className="text-sm align-super ml-0.5 bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-white/80 font-medium">©</span>
+            <span className="absolute -inset-2 bg-white/10 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+          </span>
+        </motion.p>
       </div>
 
       {showVideo && (

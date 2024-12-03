@@ -5,40 +5,51 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  webpack: (config) => {
-    config.optimization.splitChunks = {
-      chunks: 'all',
-      minSize: 20000,
-      maxSize: 70000,
-      cacheGroups: {
-        default: false,
-        vendors: false,
-        framework: {
-          chunks: 'all',
-          name: 'framework',
-          test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
-          priority: 40,
-          enforce: true
-        },
-        commons: {
-          name: 'commons',
-          chunks: 'all',
-          minChunks: 2,
-          priority: 20
-        },
-        lib: {
-          test: /[\\/]node_modules[\\/]/,
-          chunks: 'all',
-          name: 'lib',
-          priority: 30
+  webpack: (config, { isServer }) => {
+    // Handle node canvas in SSR
+    if (!isServer) {
+      config.externals = [...(config.externals || []), { canvas: 'canvas' }];
+    }
+
+    // Optimize Three.js and React chunks
+    config.module.rules.push({
+      test: /three[\/\\]examples[\/\\]jsm/,
+      sideEffects: false
+    });
+
+    config.optimization = {
+      ...config.optimization,
+      moduleIds: 'deterministic',
+      chunkIds: 'named',
+      splitChunks: {
+        chunks: 'all',
+        minSize: 20000,
+        maxSize: 100000,
+        cacheGroups: {
+          default: false,
+          defaultVendors: false,
+          framework: {
+            chunks: 'all',
+            name: 'framework',
+            test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|next|@next)[\\/]/,
+            priority: 40,
+            enforce: true,
+          },
+          three: {
+            chunks: 'all',
+            test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
+            name: 'three-vendor',
+            priority: 30,
+            enforce: true,
+          },
+          commons: {
+            name: 'commons',
+            minChunks: 2,
+            priority: 20,
+            reuseExistingChunk: true,
+          }
         }
       }
-    };
-
-    // Optimize Three.js and related packages
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      'three': 'three/src/Three',
     };
 
     return config;

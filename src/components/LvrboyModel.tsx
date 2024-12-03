@@ -3,9 +3,8 @@
 import { useGLTF } from '@react-three/drei';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree, ThreeEvent } from '@react-three/fiber';
 import { gsap } from 'gsap';
-import type { ThreeEvent } from '@react-three/fiber';
 
 interface LvrboyModelProps {
   onLoad?: () => void;
@@ -18,6 +17,9 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
   const lastClickTime = useRef(0);
   const faceMesh = useRef<THREE.Mesh | null>(null);
   const originalMaterial = useRef<THREE.Material | null>(null);
+  const { mouse, viewport } = useThree();
+  const targetRotation = useRef({ x: 0, y: 0 });
+  const [clickAnimation, setClickAnimation] = useState(false);
 
   const { scene } = useGLTF('/base_basic_shaded.glb', true);
 
@@ -79,21 +81,48 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
     };
   }, [scene, onLoad]);
 
-  useFrame((state) => {
-    if (!faceMesh.current || !hovered) return;
+  // Mouse movement effect
+  useFrame((state, delta) => {
+    if (!group.current) return;
 
-    const time = state.clock.getElapsedTime();
-    
-    const scale = 1 + Math.sin(time * 3) * 0.01;
-    faceMesh.current.scale.setScalar(scale);
+    // Calculate target rotation based on mouse position
+    targetRotation.current.x = mouse.y * 0.2;
+    targetRotation.current.y = mouse.x * 0.2;
 
-    if (faceMesh.current.material instanceof THREE.MeshStandardMaterial) {
-      faceMesh.current.material.emissiveIntensity = 0.2 + Math.sin(time * 2) * 0.1;
+    // Smooth rotation lerping
+    group.current.rotation.x = THREE.MathUtils.lerp(
+      group.current.rotation.x,
+      targetRotation.current.x,
+      delta * 2
+    );
+    group.current.rotation.y = THREE.MathUtils.lerp(
+      group.current.rotation.y,
+      targetRotation.current.y,
+      delta * 2
+    );
+
+    // Hover animation
+    if (faceMesh.current && hovered) {
+      const time = state.clock.getElapsedTime();
+      const scale = 1 + Math.sin(time * 3) * 0.01;
+      faceMesh.current.scale.setScalar(scale);
+
+      if (faceMesh.current.material instanceof THREE.MeshStandardMaterial) {
+        faceMesh.current.material.emissiveIntensity = 0.2 + Math.sin(time * 2) * 0.1;
+      }
+    }
+
+    // Click animation
+    if (clickAnimation && group.current) {
+      const time = state.clock.getElapsedTime();
+      group.current.position.y = Math.sin(time * 8) * 0.05;
+      if (time > 0.5) {
+        setClickAnimation(false);
+      }
     }
   });
 
   const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
-    if (!e.object) return;
     const mesh = e.object as THREE.Mesh;
     
     if (mesh === faceMesh.current) {
@@ -117,7 +146,6 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
   };
 
   const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
-    if (!e.object) return;
     const mesh = e.object as THREE.Mesh;
     
     if (mesh === faceMesh.current) {
@@ -141,13 +169,14 @@ export default function LvrboyModel({ onLoad }: LvrboyModelProps) {
   };
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
-    if (!e.object) return;
     const mesh = e.object as THREE.Mesh;
     
     if (mesh !== faceMesh.current) return;
 
     const currentTime = Date.now();
     const timeSinceLastClick = currentTime - lastClickTime.current;
+
+    setClickAnimation(true);
 
     if (timeSinceLastClick < 300) {
       if (mesh.material instanceof THREE.MeshStandardMaterial) {
