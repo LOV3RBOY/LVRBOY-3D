@@ -76,43 +76,13 @@ const LoadingScreen = () => {
   );
 };
 
-const Scene = dynamic<ComponentType>(
-  () => {
-    return new Promise((resolve) => {
-      const loadComponent = async (): Promise<ComponentType> => {
-        try {
-          const component = await import('../components/Scene');
-          return component.default;
-        } catch (err) {
-          console.error('Error loading Scene:', err);
-          const fallback = await import('../components/Scene');
-          return fallback.default;
-        }
-      };
+// Define the type for our Scene component
+type SceneProps = Record<string, never>; // empty props object
 
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Loading timeout')), MAX_LOADING_TIME);
-      });
-
-      const loadWithTimeout = async () => {
-        try {
-          const component = await Promise.race([loadComponent(), timeoutPromise]);
-          setTimeout(() => resolve(component), MIN_LOADING_TIME);
-        } catch (error) {
-          console.error('Loading error or timeout:', error);
-          const fallback = await loadComponent();
-          resolve(fallback);
-        }
-      };
-
-      loadWithTimeout();
-    });
-  },
-  {
-    ssr: false,
-    loading: LoadingScreen
-  }
-);
+const Scene = dynamic(() => import('../components/Scene'), {
+  loading: LoadingScreen,
+  ssr: false,
+}) as ComponentType<SceneProps>;
 
 export default function Home() {
   return (
