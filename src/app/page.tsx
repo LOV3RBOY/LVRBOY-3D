@@ -100,10 +100,12 @@ const DelayedScene: FC = () => {
   return <Scene />;
 };
 
-export default function Home() {
+const Page: FC = () => {
   return (
     <main>
       <DelayedScene />
     </main>
   );
-} 
+};
+
+export default Page; 
