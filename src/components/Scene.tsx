@@ -64,6 +64,7 @@ export default function Scene() {
           <OrbitControls
             enablePan={false}
             enableZoom={true}
+            enableRotate={true}
             minDistance={3}
             maxDistance={7}
             minPolarAngle={Math.PI / 3}
@@ -72,8 +73,7 @@ export default function Scene() {
             dampingFactor={0.05}
             rotateSpeed={0.5}
             autoRotate={false}
-            enableTouchRotate={true}
-            enableTouchZoom={true}
+            makeDefault
           />
         </Suspense>
       </Canvas>
@@ -119,7 +119,7 @@ export default function Scene() {
 
       {showVideo && (
         <VimeoPlayer
-          videoId="1015025973"
+          videoId="1035273314"
           onClose={handleVideoClose}
         />
       )}

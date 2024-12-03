@@ -36,7 +36,16 @@ const nextConfig = {
     optimizePackageImports: ['@react-three/fiber', '@react-three/drei', 'three']
   },
   images: {
-    domains: ['i.vimeocdn.com', 'player.vimeo.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.vimeocdn.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'player.vimeo.com'
+      }
+    ]
   },
   async headers() {
     return [
@@ -46,16 +55,26 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' player.vimeo.com",
-              "connect-src 'self' blob: data:",
-              "frame-src player.vimeo.com",
+              "default-src 'self' *.vimeo.com *.vimeocdn.com",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' player.vimeo.com *.vimeo.com",
+              "connect-src 'self' blob: data: *.vimeo.com *.vimeocdn.com",
+              "frame-src player.vimeo.com *.vimeo.com",
               "img-src 'self' data: blob: *.vimeocdn.com",
-              "media-src 'self' blob: data:",
+              "media-src 'self' blob: data: *.vimeo.com *.vimeocdn.com",
               "style-src 'self' 'unsafe-inline'",
-              "worker-src 'self' blob:"
+              "worker-src 'self' blob:",
+              "child-src blob: *.vimeo.com",
+              "object-src 'none'"
             ].join('; ')
           },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          },
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          }
         ],
       },
     ];
