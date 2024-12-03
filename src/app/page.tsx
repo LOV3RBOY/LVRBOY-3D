@@ -78,7 +78,7 @@ const LoadingScreen = () => {
 
 // Simple dynamic import with loading delay
 const Scene = dynamic(() => {
-  return new Promise<ComponentType>((resolve) => {
+  return new Promise<ComponentType<{}>>((resolve) => {
     import('../components/Scene')
       .then((mod) => {
         setTimeout(() => {
