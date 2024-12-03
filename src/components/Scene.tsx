@@ -2,7 +2,7 @@
 
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { Suspense, useState } from 'react';
+import { Suspense, useState, FC } from 'react';
 import dynamic from 'next/dynamic';
 import * as THREE from 'three';
 import InteractiveButton from './InteractiveButton';
@@ -33,7 +33,7 @@ function LoadingFallback() {
   );
 }
 
-export default function Scene() {
+const Scene: FC = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [isModelLoading, setIsModelLoading] = useState(true);
 
@@ -143,4 +143,6 @@ export default function Scene() {
       </AnimatePresence>
     </div>
   );
-} 
+};
+
+export default Scene; 

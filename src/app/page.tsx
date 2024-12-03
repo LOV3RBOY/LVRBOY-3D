@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { Syncopate } from 'next/font/google';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import type { ComponentType } from 'react';
+import type { FC } from 'react';
 
 const syncopate = Syncopate({
   weight: ['400', '700'],
@@ -14,7 +14,7 @@ const syncopate = Syncopate({
 const MIN_LOADING_TIME = 2000; // 2 seconds minimum
 const MAX_LOADING_TIME = 5000; // 5 seconds maximum
 
-const LoadingScreen = () => {
+const LoadingScreen: FC = () => {
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
@@ -76,12 +76,13 @@ const LoadingScreen = () => {
   );
 };
 
+// Dynamically import Scene component
 const Scene = dynamic(() => import('../components/Scene'), {
-  loading: LoadingScreen,
+  loading: () => <LoadingScreen />,
   ssr: false
 });
 
-const DelayedScene = () => {
+const DelayedScene: FC = () => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
