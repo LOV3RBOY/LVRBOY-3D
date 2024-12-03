@@ -1,3 +1,7 @@
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -30,6 +34,13 @@ const nextConfig = {
         }
       }
     };
+
+    // Optimize Three.js and related packages
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'three': 'three/src/Three',
+    };
+
     return config;
   },
   experimental: {
@@ -81,4 +92,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig 
+module.exports = withBundleAnalyzer(nextConfig) 
