@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import { Syncopate } from 'next/font/google';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import type { ComponentType } from 'react';
 
 const syncopate = Syncopate({
   weight: ['400', '700'],
@@ -76,13 +75,20 @@ const LoadingScreen = () => {
   );
 };
 
-// Define the type for our Scene component
-type SceneProps = Record<string, never>; // empty props object
-
-const Scene = dynamic(() => import('../components/Scene'), {
-  loading: LoadingScreen,
-  ssr: false,
-}) as ComponentType<SceneProps>;
+const Scene = dynamic(
+  () => {
+    return new Promise((resolve) => {
+      setTimeout(async () => {
+        const component = await import('../components/Scene');
+        resolve(component.default);
+      }, MIN_LOADING_TIME);
+    });
+  },
+  {
+    loading: LoadingScreen,
+    ssr: false,
+  }
+);
 
 export default function Home() {
   return (
