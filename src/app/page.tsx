@@ -76,32 +76,33 @@ const LoadingScreen = () => {
   );
 };
 
-// Simple dynamic import with loading delay
-const Scene = dynamic(() => {
-  return new Promise<ComponentType<{}>>((resolve) => {
-    import('../components/Scene')
-      .then((mod) => {
-        setTimeout(() => {
-          resolve(mod.default);
-        }, MIN_LOADING_TIME);
-      })
-      .catch((err) => {
-        console.error('Error loading Scene:', err);
-        // Fallback to retry import
-        import('../components/Scene').then((mod) => {
-          resolve(mod.default);
-        });
-      });
-  });
-}, {
+const Scene = dynamic(() => import('../components/Scene'), {
   loading: LoadingScreen,
-  ssr: false,
+  ssr: false
 });
+
+const DelayedScene = () => {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReady(true);
+    }, MIN_LOADING_TIME);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!ready) {
+    return <LoadingScreen />;
+  }
+
+  return <Scene />;
+};
 
 export default function Home() {
   return (
     <main>
-      <Scene />
+      <DelayedScene />
     </main>
   );
 } 
