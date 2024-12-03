@@ -7,19 +7,20 @@ import dynamic from 'next/dynamic';
 import * as THREE from 'three';
 import InteractiveButton from './InteractiveButton';
 import { Archivo_Black } from 'next/font/google';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const archivo = Archivo_Black({
   weight: '400',
   subsets: ['latin'],
 });
 
-const LvrboyModel = dynamic(() => import('./LvrboyModel'), {
+// Dynamic imports with noSSR option
+const LvrboyModel = dynamic(() => import('./LvrboyModel').then(mod => mod.default), {
   ssr: false,
   loading: () => null
 });
 
-const VimeoPlayer = dynamic(() => import('./VimeoPlayer'), {
+const VimeoPlayer = dynamic(() => import('./VimeoPlayer').then(mod => mod.default), {
   ssr: false,
   loading: () => null
 });
@@ -132,12 +133,14 @@ export default function Scene() {
         </motion.p>
       </div>
 
-      {showVideo && (
-        <VimeoPlayer
-          videoId="1035273314"
-          onClose={handleVideoClose}
-        />
-      )}
+      <AnimatePresence mode="wait">
+        {showVideo && (
+          <VimeoPlayer
+            videoId="1035273314"
+            onClose={handleVideoClose}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 } 

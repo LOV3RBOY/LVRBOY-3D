@@ -77,13 +77,14 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value: [
-              "default-src 'self' *.vimeo.com *.vimeocdn.com",
+              "default-src 'self'",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' player.vimeo.com *.vimeo.com",
-              "connect-src 'self' blob: data: *.vimeo.com *.vimeocdn.com",
-              "frame-src player.vimeo.com *.vimeo.com",
+              "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
+              "font-src 'self' fonts.gstatic.com",
+              "connect-src 'self' blob: data: *.vimeo.com *.vimeocdn.com fonts.googleapis.com fonts.gstatic.com",
+              "frame-src 'self' player.vimeo.com *.vimeo.com",
               "img-src 'self' data: blob: *.vimeocdn.com",
               "media-src 'self' blob: data: *.vimeo.com *.vimeocdn.com",
-              "style-src 'self' 'unsafe-inline'",
               "worker-src 'self' blob:",
               "child-src blob: *.vimeo.com",
               "object-src 'none'"

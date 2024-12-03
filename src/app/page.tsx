@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { Syncopate } from 'next/font/google';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import type { ComponentType } from 'react';
 
 const syncopate = Syncopate({
   weight: ['400', '700'],
@@ -75,20 +76,27 @@ const LoadingScreen = () => {
   );
 };
 
-const Scene = dynamic(
-  () => {
-    return new Promise((resolve) => {
-      setTimeout(async () => {
-        const component = await import('../components/Scene');
-        resolve(component.default);
-      }, MIN_LOADING_TIME);
-    });
-  },
-  {
-    loading: LoadingScreen,
-    ssr: false,
-  }
-);
+// Simple dynamic import with loading delay
+const Scene = dynamic(() => {
+  return new Promise<ComponentType>((resolve) => {
+    import('../components/Scene')
+      .then((mod) => {
+        setTimeout(() => {
+          resolve(mod.default);
+        }, MIN_LOADING_TIME);
+      })
+      .catch((err) => {
+        console.error('Error loading Scene:', err);
+        // Fallback to retry import
+        import('../components/Scene').then((mod) => {
+          resolve(mod.default);
+        });
+      });
+  });
+}, {
+  loading: LoadingScreen,
+  ssr: false,
+});
 
 export default function Home() {
   return (
