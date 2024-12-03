@@ -11,7 +11,7 @@ export default function InteractiveButton({ onClick }: InteractiveButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Subtle pulse animation when not hovered
+  // Subtle floating animation when not hovered
   useEffect(() => {
     if (!isHovered) {
       const interval = setInterval(() => {
@@ -27,11 +27,11 @@ export default function InteractiveButton({ onClick }: InteractiveButtonProps) {
         relative
         pointer-events-auto
         transition-all
-        duration-300
+        duration-500
         transform
         ${isHovered ? 'scale-110' : 'scale-100'}
-        ${isAnimating && !isHovered ? 'animate-pulse' : ''}
-        hover:rotate-180
+        ${isAnimating && !isHovered ? 'translate-y-[-4px]' : 'translate-y-0'}
+        hover:rotate-[360deg]
         group
         mx-1
       `}
@@ -40,34 +40,21 @@ export default function InteractiveButton({ onClick }: InteractiveButtonProps) {
       onMouseLeave={() => setIsHovered(false)}
       aria-label="Show Easter Egg Video"
     >
-      {/* Glow effect */}
+      {/* Orbital rings effect */}
       <div
         className={`
           absolute
           inset-0
           rounded-full
-          transition-opacity
-          duration-300
-          ${isHovered ? 'opacity-100' : 'opacity-0'}
-          animate-ping
-          bg-white/30
-          scale-150
-        `}
-      />
-      
-      {/* Rotating ring */}
-      <div
-        className={`
-          absolute
-          inset-0
-          rounded-full
-          border-2
-          border-white/50
           transition-all
-          duration-300
-          ${isHovered ? 'scale-125 rotate-180' : 'scale-100 rotate-0'}
+          duration-700
+          ${isHovered ? 'opacity-100' : 'opacity-0'}
         `}
-      />
+      >
+        <div className="absolute inset-0 rounded-full border border-white/30 animate-[spin_4s_linear_infinite]" />
+        <div className="absolute inset-0 rounded-full border border-white/20 animate-[spin_4s_linear_infinite_reverse]" style={{ transform: 'scale(1.1)' }} />
+        <div className="absolute inset-0 rounded-full border border-white/10 animate-[spin_3s_linear_infinite]" style={{ transform: 'scale(1.2)' }} />
+      </div>
 
       {/* Main button image */}
       <Image
@@ -79,9 +66,10 @@ export default function InteractiveButton({ onClick }: InteractiveButtonProps) {
           relative
           z-10
           transition-all
-          duration-300
-          ${isHovered ? 'filter brightness-125' : ''}
-          group-hover:shadow-lg
+          duration-500
+          ${isHovered ? 'brightness-125 contrast-125' : ''}
+          group-hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]
+          rounded-full
         `}
         priority
       />
@@ -99,9 +87,9 @@ export default function InteractiveButton({ onClick }: InteractiveButtonProps) {
           font-light
           tracking-wider
           whitespace-nowrap
-          transition-opacity
+          transition-all
           duration-300
-          ${isHovered ? 'opacity-100' : 'opacity-0'}
+          ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
         `}
       >
         Click me!

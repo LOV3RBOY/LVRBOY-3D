@@ -117,6 +117,12 @@ export default function Scene() {
         </h1>
       </div>
 
+      <div className="absolute bottom-4 left-0 right-0 z-10 text-center">
+        <p className="text-white/80 text-sm tracking-wider font-light">
+          LVRBOY<span className="align-super text-xs ml-0.5">©</span>
+        </p>
+      </div>
+
       {showVideo && (
         <VimeoPlayer
           videoId="1035273314"
